@@ -1,0 +1,14 @@
+// 用于测试`ch1/dup2/main.go`程序
+// 在终端输入`./dup2 ./test.txt`即可
+
+hello
+i
+love
+u
+u
+hello
+haha
+i think so,
+u
+i
+end
