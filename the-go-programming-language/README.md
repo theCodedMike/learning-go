@@ -1,6 +1,6 @@
 # The Go Programming Language
 
-## [Chapter 1: Tutorial 入门](./ch1/README.md)
+## [Chapter 1: Tutorial 入门](ch1_tutorial/README.md)
 ### 1.1 Hello, World
 ### 1.2 Command Line Arguments 命令行参数
 ### 1.3 Finding Duplicate Lines 查找重复的行
@@ -19,7 +19,7 @@
 ### 2.6 Packages and Files 包和文件
 ### 2.7 Scope 作用域
 
-## [Chapter 3: Basic Data Types 基础数据类型](./ch3/README.md)
+## [Chapter 3: Basic Data Types 基础数据类型](ch3_basic_data_types/README.md)
 ### 3.1 Integers
 ### 3.2 Floating-Point Numbers
 ### 3.3 Complex Numbers
