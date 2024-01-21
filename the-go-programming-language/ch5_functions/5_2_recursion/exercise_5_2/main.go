@@ -8,6 +8,14 @@ import (
 	"os"
 )
 
+//  补充：
+//   <NodeType>     <Data>
+//
+//   DoctypeNode : [html]
+//   CommentNode : [STATUS OK]
+//   ElementNode : [html head meta link title body div img form input span a noscript script p]
+//      TextNode : [百度一下，你就知道 新闻 hao123 地图 视频 贴吧 使用百度前必读 意见反馈 京ICP证030173号]
+
 // 在终端执行：
 //  1. go build gopl.io/ch1_tutorial/1_5_fetching_a_url/fetch
 //  2. go build gopl.io/ch5_functions/5_2_recursion/exercise_5_2
