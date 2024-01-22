@@ -69,6 +69,54 @@
 3. 如果一个函数所有的返回值都有显式的变量名，那么该函数的return语句可以省略操作数。这称之为`bare return`
 
 ## 5.4 错误
+1. 内置的error是接口类型
+2. io包保证任何由文件结束引起的读取失败都返回同一个错误`io.EOF`
+3. 错误处理策略
+   ```go
+   // 1. 传播错误
+   resp, err := http.Get(url)
+   if err != nil{
+       return nil, err
+   }
+   
+   // 2. 如果错误的发生是偶然性的，或由不可预知的问题导致的，可以尝试重试
+   // WaitForServer attempts to contact the server of a URL.
+   // It tries for one minute using exponential back-off.
+   // It reports an error if all attempts fail.
+   func WaitForServer(url string) error {
+       const timeout = 1 * time.Minute
+       deadline := time.Now().Add(timeout)
+       for tries := 0; time.Now().Before(deadline); tries++ {
+           _, err := http.Head(url)
+           if err == nil {
+               return nil // success
+           }
+           log.Printf("server not responding (%s);retrying…", err)
+           time.Sleep(time.Second << uint(tries)) // exponential back-off
+       }
+       return fmt.Errorf("server %s failed to respond after %s", url, timeout)
+   }
+   
+   // 3. 如果错误发生后，程序无法继续运行，则输出错误信息并结束程序。这种策略只应在main中执行
+   // (In function main.)
+   if err := WaitForServer(url); err != nil {
+       fmt.Fprintf(os.Stderr, "Site is down: %v\n", err)
+       os.Exit(1)
+   }
+   
+   // 4. 有时我们只需要输出错误信息就足够了，不需要中断程序的运行
+   if err := Ping(); err != nil {
+       log.Printf("ping failed: %v; networking disabled",err)
+   }
+   
+   // 5. 直接忽略掉错误
+   dir, err := ioutil.TempDir("", "scratch")
+   if err != nil {
+       return fmt.Errorf("failed to create temp dir: %v",err)
+   }
+   // ...use temp dir, ignore errors; $TMPDIR is cleaned periodically
+   os.RemoveAll(dir) // 操作系统会定期地清理临时目录，故无须处理这里出现的错误
+   ```
 
 ## 5.5 函数值
 
