@@ -119,6 +119,23 @@
    ```
 
 ## 5.5 函数值
+1. 在Go中，函数被看作第一类值（first-class values）：函数像其他值一样，拥有类型，可以被赋值给其他变量，传递给函数，从函数返回。对函数值（function value）的调用类似函数调用。
+   ```go
+   func square(n int) int { return n * n }
+   func negative(n int) int { return -n }
+   func product(m, n int) int { return m * n }
+   
+   f := square
+   fmt.Println(f(3)) // "9"
+   
+   f = negative
+   fmt.Println(f(3))     // "-3"
+   fmt.Printf("%T\n", f) // "func(int) int"
+   
+   f = product // compile error: can't assign func(int, int) int to func(int) int
+   ```
+2. 函数类型的零值是nil。调用值为nil的函数值会引起panic错误。
+3. 函数值可以与nil比较，但是函数值之间是不可比较的，也不能用函数值作为map的key。
 
 ## 5.6 匿名函数
 
