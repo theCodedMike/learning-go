@@ -138,6 +138,25 @@
 3. 函数值可以与nil比较，但是函数值之间是不可比较的，也不能用函数值作为map的key。
 
 ## 5.6 匿名函数
+1. 拥有函数名的函数只能在包级语法块中被声明
+2. 函数字面量（function literal）是一种表达式，它的值被称为**匿名函数**（anonymous function）
+3. Go使用**闭包**（closures）技术实现函数值
+4. 当匿名函数需要被递归调用时，需要先声明一个变量，然后再将匿名函数赋值给这个变量。即必须分2步
+5. 函数值中记录的是循环变量的内存地址，而不是循环变量某一时刻的值。
+   ```go
+   var rmdirs []func()
+   for _, dir := range tempDirs() {
+       //os.MkdirAll(dir, 0755) // NOTE: incorrect!
+       dir := dir // declares inner dir, initialized to outer dir
+       rmdirs = append(rmdirs, func() {
+           os.RemoveAll(dir)
+       })
+   }
+   // ...do some work…
+   for _, rmdir := range rmdirs {
+       rmdir() // clean up
+   }
+   ```
 
 ## 5.7 可变参数
 
