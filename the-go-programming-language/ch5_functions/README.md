@@ -159,6 +159,29 @@
    ```
 
 ## 5.7 可变参数
+1. 参数数量可变的函数称为可变参数函数。
+2. 在声明可变参数函数时，需要在参数列表的最后一个参数类型之前加上省略符号"..."，这表示该函数会接收任意数量的该类型参数。
+3. 可变参数函数和以切片作为参数的函数是不同的，它们只是行为上看起来很像。
+   ```go
+   func sum(vals ...int) int {
+       total := 0
+       for _, val := range vals {
+           total += val
+       }
+       return total
+   }
+   fmt.Println(sum())           // 0
+   fmt.Println(sum(3))          // 3
+   fmt.Println(sum(1, 2, 3, 4)) // 10
+   values := []int{1, 2, 3, 4}
+   fmt.Println(sum(values...))  // 10
+   
+   func f(...int) {}
+   func g([]int) {}
+   fmt.Printf("%T\n", f) // func(...int)
+   fmt.Printf("%T\n", g) // func([]int)
+   ```
+4. 可变参数函数经常被用于格式化字符串。
 
 ## 5.8 Deferred函数
 
