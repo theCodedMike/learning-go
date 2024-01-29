@@ -1,3 +1,5 @@
+// Package geometry defines simple types for plane geometry.
+// package geometry
 package main
 
 import (
