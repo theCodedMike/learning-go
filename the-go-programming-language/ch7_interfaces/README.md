@@ -45,12 +45,47 @@
 1. 一个类型如果拥有一个接口需要的所有方法，那么这个类型就实现了这个接口。
 2. 一个类型属于某个接口只要这个类型实现了这个接口即可。
 3. `interface{}`被称为空接口类型，对实现它的类型没有要求，所以可以将任意一个值赋给空接口类型。
+   ```go
+   //type any = interface{}
+   var any interface{}
+   any = true
+   any = 12.34
+   any = "hello"
+   any = map[string]int{"one": 1}
+   any = new(bytes.Buffer)
+   ```
 
 ## 7.4 flag.Value接口
+```go
+package flag
+
+type Value interface {
+    String() string
+    Set(string) error
+}
+```
 
 ## 7.5 接口值
+1. **接口值**由两个部分组成，一个具体的类型和那个类型的值，它们被称为接口的`动态类型`和`动态值`。
+2. 一个接口值是零值意味着它的类型和值的部分都是nil。
+![](../assets/a_nil_interface_value.png)
+3. 接口上的调用必须使用**动态分配**，因为不是直接调用，所以编译器必须把代码生成在类型描述符的方法上，然后间接调用那个地址，这个调用的接收者是一个接口动态值的拷贝。
+![](../assets/an_interface_value.png)
+4. 一个接口值可以持有任意大的动态值。
+5. 接口值是可比较的，故它们可以用作map的键或者作为switch语句的操作数。
+6. 一个不包含任何值的nil接口值和一个刚好包含nil指针的接口值是不同的。
+![](../assets/a_non_nil_interface_containing_a_nil_ptr.png)
 
 ## 7.6 sort.Interface接口
+```go
+package sort
+
+type Interface interface {
+   Len() int
+   Less(i, j int) bool
+   Swap(i, j int)
+}
+```
 
 ## 7.7 http.Handler接口
 
