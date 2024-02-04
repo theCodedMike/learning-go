@@ -88,6 +88,21 @@ type Interface interface {
 ```
 
 ## 7.7 http.Handler接口
+```go
+package http
+
+type Header map[string][]string
+
+type Handler interface {
+   ServeHTTP(ResponseWriter, *Request)
+}
+
+type ResponseWriter interface {
+   Header() Header
+   Write([]byte) (int, error)
+   WriteHeader(statusCode int)
+}
+```
 
 ## 7.8 error接口
 
