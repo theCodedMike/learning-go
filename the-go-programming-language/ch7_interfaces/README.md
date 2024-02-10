@@ -105,6 +105,13 @@ type ResponseWriter interface {
 ```
 
 ## 7.8 error接口
+```go
+type error interface {
+	Error() string
+}
+```
+1. 创建一个error最简单的方法是调用errors.New函数（不推荐）。
+2. 调用fmt.Errorf函数。
 
 ## 7.9 示例：表达式求值
 
