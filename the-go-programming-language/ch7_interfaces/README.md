@@ -106,6 +106,8 @@ type ResponseWriter interface {
 
 ## 7.8 error接口
 ```go
+package builtin
+
 type error interface {
 	Error() string
 }
@@ -116,13 +118,88 @@ type error interface {
 ## 7.9 示例：表达式求值
 
 ## 7.10 类型断言
+1. 类型断言是一个作用在接口值上的操作。失败时可以抛panic，也可以返回一个bool值。
+   ```go
+   // 断言类型T是一个具体类型
+   var w io.Writer
+   w = os.Stdout
+   f := w.(*os.File)      // success: f == os.Stdout
+   c := w.(*bytes.Buffer) // panic: interface holds *os.File, not *bytes.Buffer
+
+   // 断言类型T是一个接口类型
+   var w io.Writer
+   w = os.Stdout
+   rw := w.(io.ReadWriter) // success: *os.File has both Read and Write
+   w = new(ByteCounter)
+   rw = w.(io.ReadWriter) // panic: *ByteCounter has no Read method
+
+   // 失败时返回值为false的变量ok，而不是抛panic
+   var w io.Writer = os.Stdout
+   f, ok := w.(*os.File)      // success:  ok, f == os.Stdout
+   b, ok := w.(*bytes.Buffer) // failure: !ok, b == nil
+   ```
+2. 如果断言操作的对象是一个nil接口值，那么不论被断言的类型是什么这个类型断言都会失败。
 
 ## 7.11 基于类型断言识别错误类型
 
 ## 7.12 通过类型断言查询接口
+   ```go
+   package fmt
+   
+   func formatOneValue(x interface{}) string {
+       if err, ok := x.(error); ok {
+           return err.Error()
+       }
+       if str, ok := x.(Stringer); ok {
+           return str.String()
+       }
+       // ...all other types...
+   }
+   ```
 
 ## 7.13 类型switch
+   ```go
+   func sqlQuote(x interface{}) string {
+       if x == nil {
+           return "NULL"
+       } else if _, ok := x.(int); ok {
+           return fmt.Sprintf("%d", x)
+       } else if _, ok := x.(uint); ok {
+           return fmt.Sprintf("%d", x)
+       } else if b, ok := x.(bool); ok {
+           if b {
+               return "TRUE"
+           }
+           return "FALSE"
+       } else if s, ok := x.(string); ok {
+           return sqlQuoteString(s) // (not shown)
+       } else {
+           panic(fmt.Sprintf("unexpected type %T: %v", x, x))
+       }
+   }
+
+   func sqlQuote(x interface{}) string {
+       switch x := x.(type) {
+       case nil:
+           return "NULL"
+       case int, uint:
+           return fmt.Sprintf("%d", x) // x has type interface{} here.
+       case bool:
+           if x {
+               return "TRUE"
+           }
+           return "FALSE"
+       case string:
+           return sqlQuoteString(x) // (not shown)
+       default:
+           panic(fmt.Sprintf("unexpected type %T: %v", x, x))
+       }
+   }
+   ```
+1. 接口可以以两种不同的方式被使用。第一种方式是以io.Reader、io.Writer、fmt.Stringer、sort.Interface、http.Handler和error为典型，接口的方法被具体类型实现；第二种方式是一个接口值可以持有各种具体类型值
 
 ## 7.14 示例：基于Token的XML解码
 
 ## 7.15 补充几点
+1. 只有当有两个或两个以上的具体类型必须以相同的方式进行处理时才需要接口。
+2. 当一个接口只被一个单一的具体类型实现时有一个例外，就是由于它的依赖，这个具体类型不能和这个接口存在于一个相同的包中。（即解耦多个具体的类型）
