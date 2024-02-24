@@ -51,6 +51,8 @@
 ## 8.6 示例：并发的Web服务
 
 ## 8.7 基于select的多路复用
+1. `channel`的零值是nil。
+2. 对一个值为nil的channel发送和接收操作会永远阻塞；在select语句中操作值为nil的channel永远都不会被select到。
 
 ## 8.8 示例：并发的目录遍历
 
