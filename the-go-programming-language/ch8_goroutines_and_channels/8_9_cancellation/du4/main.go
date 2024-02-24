@@ -1,8 +1,7 @@
-// The du3 command computes the disk usage of the files in a directory.
+// The du4 command computes the disk usage of the files in a directory.
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -10,25 +9,26 @@ import (
 	"time"
 )
 
-// The du3 variant traverses all directories in parallel.
-// It uses a concurrency-limiting counting semaphore
-// to avoid opening too many files at once.
-var vFlag = flag.Bool("v", false, "show verbose progress messages")
+// The du4 variant includes cancellation:
+// it terminates quickly when the user hits return.
 
 // 在终端执行：
 //
-// go run ./ch8_goroutines_and_channels/8_8_example_concurrent_directory_traversal/du3/main.go ~ /usr /var
-//
-// go run ./ch8_goroutines_and_channels/8_8_example_concurrent_directory_traversal/du3/main.go -v ~ /usr /var
+// go run ./ch8_goroutines_and_channels/8_9_cancellation/du4/main.go ~ /usr /var
 func main() {
-	flag.Parse()
-
 	// Determine the initial directories.
-	roots := flag.Args()
+	roots := os.Args[1:]
 	if len(roots) == 0 {
 		roots = []string{"."}
 	}
 
+	// Cancel traversal when input is detected.
+	go func() {
+		_, _ = os.Stdin.Read(make([]byte, 1)) // read a single byte
+		close(done)
+	}()
+
+	// Traverse each root of the file tree in parallel.
 	fileSizes := make(chan int64)
 	var n sync.WaitGroup
 	for _, root := range roots {
@@ -41,15 +41,17 @@ func main() {
 	}()
 
 	// Print the results periodically.
-	var tick <-chan time.Time
-	if *vFlag {
-		tick = time.Tick(500 * time.Millisecond)
-	}
-
+	tick := time.Tick(500 * time.Millisecond)
 	var nFiles, nBytes int64
 loop:
 	for {
 		select {
+		case <-done:
+			// Drain fileSizes to allow existing goroutines to finish.
+			for range fileSizes {
+				// Do nothing.
+			}
+			return
 		case size, ok := <-fileSizes:
 			if !ok {
 				break loop // fileSizes was closed
@@ -60,8 +62,18 @@ loop:
 			printDiskUsage(nFiles, nBytes)
 		}
 	}
-
 	printDiskUsage(nFiles, nBytes) // final totals
+}
+
+var done = make(chan struct{})
+
+func cancelled() bool {
+	select {
+	case <-done:
+		return true
+	default:
+		return false
+	}
 }
 
 func printDiskUsage(nfiles, nbytes int64) {
@@ -72,6 +84,9 @@ func printDiskUsage(nfiles, nbytes int64) {
 // and sends the size of each found file on fileSizes.
 func walkDir(dir string, n *sync.WaitGroup, fileSizes chan<- int64) {
 	defer n.Done()
+	if cancelled() {
+		return
+	}
 	for _, entry := range dirents(dir) {
 		if entry.IsDir() {
 			n.Add(1)
@@ -82,7 +97,7 @@ func walkDir(dir string, n *sync.WaitGroup, fileSizes chan<- int64) {
 
 			var fileSize int64
 			if err != nil {
-				_, _ = fmt.Fprintf(os.Stderr, "du1: read info error: %v\n", err)
+				_, _ = fmt.Fprintf(os.Stderr, "du4: read info error: %v\n", err)
 				fileSize = 0
 			} else {
 				fileSize = info.Size()
@@ -98,15 +113,31 @@ var sema = make(chan struct{}, 20)
 
 // dirents returns the entries of directory dir.
 func dirents(dir string) []os.DirEntry {
-	sema <- struct{}{} // acquire token
-	defer func() {     // release token
+	select {
+	case sema <- struct{}{}: // acquire token
+	case <-done:
+		return nil // cancelled
+	}
+	defer func() { // release token
 		<-sema
 	}()
 
-	entries, err := os.ReadDir(dir)
+	f, err := os.Open(dir)
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "du1: %v\n", err)
+		_, _ = fmt.Fprintf(os.Stderr, "du4: open error: %v\n", err)
 		return nil
+	}
+	defer func(f *os.File) {
+		err := f.Close()
+		if err != nil {
+			_, _ = fmt.Fprintf(os.Stderr, "du4: close error: %v\n", err)
+		}
+	}(f)
+
+	entries, err := f.ReadDir(0) // 0 => no limit; read all entries
+	if err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "du4: read dir error: %v\n", err)
+		// Don't return: Readdir may return partial result.
 	}
 
 	return entries
