@@ -1,5 +1,9 @@
 package eval
 
+// 在终端执行：
+//
+// go test -run=TestCoverage ./ch7_interfaces/7_9_example_expression_evaluator/eval
+
 import (
 	"fmt"
 	"math"
