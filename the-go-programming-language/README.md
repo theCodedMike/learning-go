@@ -10,7 +10,7 @@
 ### 1.7 A Web Server Web服务
 ### 1.8 Loose Ends 本章要点
 
-## [Chapter 2: Program Structure 程序结构](./ch2/README.md)
+## [Chapter 2: Program Structure 程序结构](./ch2_program_structure/README.md)
 ### 2.1 Names 命名
 ### 2.2 Declarations 声明
 ### 2.3 Variables 变量
@@ -27,7 +27,7 @@
 ### 3.5 Strings
 ### 3.6 Constants
 
-## [Chapter 4: Composite Types](./ch4/README.md)
+## [Chapter 4: Composite Types 复合数据类型](./ch4_composite_types/README.md)
 ### 4.1 Arrays
 ### 4.2 Slices
 ### 4.3 Maps
@@ -35,7 +35,7 @@
 ### 4.5 JSON
 ### 4.6 Text and HTML Templates
 
-## Chapter 5: Functions
+## [Chapter 5: Functions 函数](./ch5_functions/README.md)
 ### 5.1 Function Declarations
 ### 5.2 Recursion
 ### 5.3 Multiple Return Values
@@ -47,7 +47,7 @@
 ### 5.9 Panic
 ### 5.10 Recover
 
-## Chapter 6: Methods
+## [Chapter 6: Methods 方法](./ch6_methods/README.md)
 ### 6.1 Method Declarations
 ### 6.2 Methods with a Pointer Receiver
 ### 6.3 Composing Types by Struct Embedding
@@ -55,7 +55,7 @@
 ### 6.5 Example: Bit Vector Type
 ### 6.6 Encapsulation
 
-## Chapter 7: Interfaces
+## [Chapter 7: Interfaces 接口](./ch7_interfaces/README.md)
 ### 7.1 Interfaces as Contracts
 ### 7.2 Interface Types
 ### 7.3 Interface Satisfaction
@@ -72,7 +72,7 @@
 ### 7.14 Example: Token-Based XML Decoding
 ### 7.15 A Few Words of Advice
 
-## Chapter 8: Goroutines and Channels
+## [Chapter 8: Goroutines and Channels 协程和通道](./ch8_goroutines_and_channels/README.md)
 ### 8.1 Goroutines
 ### 8.2 Example: Concurrent Clock Server
 ### 8.3 Example: Concurrent Echo Server
@@ -84,7 +84,7 @@
 ### 8.9 Cancellation
 ### 8.10 Example: Chat Server
 
-## Chapter 9: Concurrency with Shared Variables
+## [Chapter 9: Concurrency with Shared Variables 基于共享变量的并发](./ch9_concurrency_with_shared_variables/README.md)
 ### 9.1 Race Conditions
 ### 9.2 Mutual Exclusion: *sync.Mutex*
 ### 9.3 Read/Write Mutexes: *sync.RWMutex*
@@ -94,7 +94,7 @@
 ### 9.7 Example: Concurrent Non-Blocking Cache
 ### 9.8 Goroutines and Threads
 
-## Chapter 10: Packages and the Go Tool
+## [Chapter 10: Packages and the Go Tool 包和工具](./ch10_packages_and_the_go_tool/README.md)
 ### 10.1 Introduction
 ### 10.2 Import Paths
 ### 10.3 The Package Declaration
@@ -103,7 +103,7 @@
 ### 10.6 Packages and Naming
 ### 10.7 The Go Tool
 
-## Chapter 11: Testing
+## [Chapter 11: Testing 测试](./ch11_testing/README.md)
 ### 11.1 The *go test* Tool
 ### 11.2 *Test* Functions
 ### 11.3 Coverage
@@ -111,7 +111,7 @@
 ### 11.5 Profiling
 ### 11.6 *Example* Functions
 
-## Chapter 12: Reflection
+## [Chapter 12: Reflection 反射](./ch12_reflection/README.md)
 ### 12.1 Why Reflections?
 ### 12.2 *reflect.Type* and *reflect.Value*
 ### 12.3 *Display*, a Recursive Value Printer
@@ -122,7 +122,7 @@
 ### 12.8 Displaying the Methods of a Type
 ### 12.9 A Word of Caution
 
-## Chapter 13: Low-Level Programming
+## [Chapter 13: Low-Level Programming 底层编程](./ch13_low_level_programming/README.md)
 ### 13.1 *unsafe.Sizeof*, *Alignof*, and *Offsetof*
 ### 13.2 *unsafe.Pointer*
 ### 13.3 Example: Deep Equivalence
